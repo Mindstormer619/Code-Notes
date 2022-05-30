@@ -1,0 +1,102 @@
+{
+  "main": {
+    "id": "a6aea91e1ea0fa73",
+    "type": "split",
+    "children": [
+      {
+        "id": "f9fe77d575ad1bea",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "Fleeting Notes/Volatility in Kotlin.md",
+            "mode": "preview"
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "9e58182cadb6b52b",
+    "type": "split",
+    "children": [
+      {
+        "id": "cd93077c9d3cee14",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ff88058876a3899e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "c87fc701be7ef674",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 228
+  },
+  "right": {
+    "id": "ef2358ffac9cc76f",
+    "type": "split",
+    "children": [
+      {
+        "id": "c85e0b4a1fd4b706",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a14a6919b6b458eb",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Fleeting Notes/Volatility in Kotlin.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "f9fe77d575ad1bea",
+  "lastOpenFiles": [
+    "Fleeting Notes/Volatility in Kotlin.md",
+    "Literature Notes/Java Performance - An Approach To Performance Testing.md",
+    "Literature Notes/Java Performance - Introduction.md",
+    "Permanent Notes/Microbenchmarking.md",
+    "Fleeting Notes/Kotlin Delegation.md",
+    "Fleeting Notes/Daemon Threads.md",
+    "Fleeting Notes/kotlin.concurrent.thread.md",
+    "Fleeting Notes/Kotlin Coroutines.md",
+    "Fleeting Notes/Kotlin Compiler.md",
+    "Fleeting Notes/Jetpack Compose Side Effects.md"
+  ]
+}
