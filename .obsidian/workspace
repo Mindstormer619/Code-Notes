@@ -9,8 +9,8 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "Fleeting Notes/Volatility in Kotlin.md",
-            "mode": "preview"
+            "file": "README.md",
+            "mode": "source"
           }
         }
       }
@@ -68,7 +68,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Fleeting Notes/Volatility in Kotlin.md",
+                "file": "README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -88,6 +88,7 @@
   },
   "active": "f9fe77d575ad1bea",
   "lastOpenFiles": [
+    "README.md",
     "Fleeting Notes/Volatility in Kotlin.md",
     "Literature Notes/Java Performance - An Approach To Performance Testing.md",
     "Literature Notes/Java Performance - Introduction.md",
@@ -96,7 +97,6 @@
     "Fleeting Notes/Daemon Threads.md",
     "Fleeting Notes/kotlin.concurrent.thread.md",
     "Fleeting Notes/Kotlin Coroutines.md",
-    "Fleeting Notes/Kotlin Compiler.md",
-    "Fleeting Notes/Jetpack Compose Side Effects.md"
+    "Fleeting Notes/Kotlin Compiler.md"
   ]
 }
