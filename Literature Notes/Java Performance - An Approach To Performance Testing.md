@@ -135,8 +135,21 @@ In the above example, it seems that the specimen in the regression test has achi
 
 The way you phrase this result is as follows: there is a 57% probability that the performance of the specimen differs from the baseline, and the best estimate of that difference is 25%.
 
-----
+You want the p-value to be smaller than the α-value, which is a measure of the acceptable fraction of the sample and the baseline being the same. Typical α-values are 0.1 (10%), 0.5 (5%) or 0.01 (1%) -- in this case, the p-value of 0.43 is super high and therefore indicative of an improvement that is **not statistically significant**.
 
+## Test Early, Test Often
+
+In general, you want to test as early and as often as possible, even if you plan to fix the regressions or performance issues only later on. 
+
+Performance testing is a little tricky to test early in the lifecycle because you don't actually have the final code / requirements which are gonna be a part of your full application -- and as you write more code it's going to affect the overall performance of the app. This can be at odds with other forms of testing (like unit tests for functionality, or security tests) where typically you fix the issues as soon as they are discovered.
+
+Follow these guidelines:
+
++ **Automate everything.** All performance tests should be scripted. All the way from deploying new code, running multiple tests, running t-test analysis, confidence level reports and measuring differences.
++ **Measure everything.** The automation must gather every conceivable piece of measurement from the test run. CPU/memory/storage/network usage, app logs, GC logs, heap dumps etc. Throw away data later when you're done debugging performance issues and don't need it anymore, but in that moment it'll guide the analysis of any debugging that you need to do. The more data that's available, the faster it is to track down clues.
++ **Run on the target system.** Actually run your performance tests in hardware/software that is as close to the actual production system as possible.
+
+----
 
 ## References
 1. [Java Performance: The Definitive Guide](https://www.oreilly.com/library/view/java-performance-the/9781449363512/) Chapter 2
