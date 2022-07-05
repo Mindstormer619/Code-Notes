@@ -1,7 +1,0 @@
-/*.markdown-source-view {
-	font-family: 'JetBrains Mono', 'Consolas', monospace !important;
-}*/
-
-body {
-	--font-monospace: var(--font-monospace-override), var(--font-monospace-theme), 'JetBrains Mono', monospace;
-}
