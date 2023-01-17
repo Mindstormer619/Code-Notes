@@ -10,7 +10,7 @@ As an example, the layers can be: real world models → objects, data structures
 
 **Relational Model:** Data is represented as _relations_ (tables) containing unordered _tuples_ (rows). Created by Edgar Codd, 1970.
 
-The usecases for relational models is generally in business data processing, either in _transaction processing_ or _batch processing_ ([[OLTP]] and [[OLAP]] are related concepts). Relational models generalized and scaled far better than expected, and went way beyond their original usecases.
+The usecases for relational models is generally in business data processing, either in _transaction processing_ or _batch processing_ (OLTP and OLAP are related concepts). Relational models generalized and scaled far better than expected, and went way beyond their original usecases.
 
 ### NoSQL
 

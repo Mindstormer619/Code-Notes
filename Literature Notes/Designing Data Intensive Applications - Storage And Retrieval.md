@@ -50,6 +50,49 @@ Final compacted file:
 
 This compaction and merging can be done in a background thread, as we _create a new file_ for each compacted file or the final merged file, during which we can continue serving read requests as normal (for example, if `dog` is queried while the final compacted file is being written, we need to read from File 1). After the merging is complete, we redirect new read requests to the final merged file, and delete the old files.
 
+#### Real Implementation
+
+There are some details to take care of:
+1. **File format:** Prefer binary (encode length + raw string without delimiters) over formats like CSV.
+2. **Deleting records:** Append a special record called a _tombstone_ that tells the compact/merge process that the key needs to be deleted when the tombstone is seen (discard old values).
+3. **Crash recovery:** Periodically write the hashmap to disk (snapshot it) so that you can quickly recover from crashes rather than have to read entire large segment files.
+4. **Partially-written records:** Checksums for detecting, then ignoring or correcting incorrect records in case of a partial write before a crash.
+5. **Concurrency control:** One single append-only writer thread, multiple concurrent reader threads (as segment files are otherwise immutable).
+
+> ❓ **Why append-only instead of updating the file in place?** One, appending and segment merges are *sequential write operations*, which are a lot faster on disks than random writes (and also faster to some extent on SSDs). Two, much easier to have concurrency and crash recovery. Three, merging old segments allows to avoid the problem of data fragmentation over time.
+
+**Limitations:**
+
++ Hash table must fit in memory. Too many keys cannot be maintained, and it's hard to have a partially on-disk hash table.
++ Range queries are not efficient — hashmaps are good at retrieving specific keys, not entire ranges of keys.
+
+### SSTables and LSM-Trees
+
+SSTables are _Sorted String Tables_, where each segment file differs in that it is _sorted by key_. Advantages:
+1. Easier to compact and merge. Since the keys are sorted, you can use an algorithm similar to mergesort to go through all the keys in the segments being merged, and quickly compact/merge them.
+2. We do not need _all_ keys in memory. If you have the keys `handbag` and `handsome` in the memory map, you can tell that they key `handiwork` will be between them (or not at all). This way, you can sparsely store keys rather than have to store every single one.
+3. Since read requests require scanning over multiple keys as-is, we can compress each "block" down and store it in the disk, reducing both space and I/O usage.
+
+Maintaining an SSTable:
+1. When a write comes in, add it to a _memtable_ — an in-memory balanced tree structure like an RBT.
+2. When the memtable gets bigger than a threshold (few MB), write it out to an SSTable on disk. This new file becomes the latest segment of the DB, any incoming requests during this write can be serviced by a new memtable instance.
+3. In order to serve read requests, first query memtable, then the newest on-disk segment, then the second-newest segment and so on.
+4. Occasionally run compaction/merge on the older segment files, and discard overwritten or deleted values.
+
+The only issue is that if the DB crashes, the memtable is lost. To prevent this, use an append-only log to keep track of writes to the memtable. The log isn't in sorted order, but doesn't matter because it's only used to restore the memtable in the event of a crash.
+
+#### LSM-Trees from SSTable
+
+The overall indexing structure, including both the memtable and the SSTable segments, is called a _Log-Structured Merge Tree_, or an LSM-Tree.
+
+In practice, we do a few extra things:
++ _Bloom filters_ can be used to quickly tell if a key is not present in the stored data, to prevent going through every single SSTable segment looking for a missing key.
++ _Size-tiered_ and _level-tiered_ compaction strategies for determining the order and timing of merge-compacting the SSTables.
+
+### B-Trees
+
+![[Pasted image 20230116145120.png]]
+
 
 
 ----
