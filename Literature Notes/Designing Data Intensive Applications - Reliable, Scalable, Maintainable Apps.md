@@ -115,8 +115,6 @@ To understand outliers, we see 95th, 99th, or 99.9th percentiles (**p95, p99, p9
 
 The high percentiles are called _tail latencies_ and they matter because they directly affect user experience of the service. The customers with the slowest requests will also often have the most data on their accounts, because they have made the most purchases -- i.e. they are the most valuable customers. However, there are diminishing returns (e.g. p999 may matter for your product, but not p9999).
 
-
-
 ----
 
 ## References
