@@ -204,11 +204,68 @@ But even all-to-all can have issues with writes arriving at other leaders out of
 
 ## Leaderless Replication
 
-If we allow *any replica* to accept writes from the client directly, this is a leaderless system.
+If we allow *any replica* to accept writes from the client directly, this is a leaderless system. An example is Amazon's internal [Dynamo][dynamo]. 
 
+![[leaderless.svg]]
 
+### Writing to the database when a node is down
+
+There is no concept of failover in leaderless configs. If a node goes down, we may continue writing to the other replicas. The client sends a write request to all replicas in parallel, and we consider the write as successful if a certain quorum of replicas respond with a write confirmation. When the dead node comes back online, reads from that node may produce stale data.
+
+To solve that problem, *reads are also sent to several nodes in parallel*. The client gets different responses from different nodes, and version numbers are used to determine which value is newer.
+
+#### Read repair and anti-entropy
+
+Processes done to ensure that all replicas eventually become consistent — when an unavailable node comes back online, it needs to catch up on writes that it missed.
+
++ **Read repair.** When a client makes several read requests in parallel, it can detect stale responses. It writes the newer value back to replicas which have stale values. This works well for values that are frequently read.
++ **Anti-entropy process.** Some datastores keep an additional background process that constantly looks for differences in data between replicas, and copies over newer data from one to the other. There may be significant delays before data is copied, however.
+
+#### Quorums for reading/writing
+
+If there are $n$ replicas, every write must be confirmed by $w$ nodes, and we must query at least $r$ nodes for each read, such that $w + r > n$ (the _quorum condition_). In this case, we will expect an up-to-date value for reading, because at least one of the $r$ nodes we are reading from must be up-to-date. These are called *quorum* reads or writes. The values of $r$ and $w$ here can be thought of as votes for the read/write to be valid. The values themselves can be configured according to the data load.
+
+> **Why does the above work?** You can read the above as $w > n - r$, which means that we are writing to more nodes than the _remaining nodes_ after subtracting the ones we read from. This means that there has to be an overlap in the nodes written to and the nodes read — i.e., there has to be at least one node which is read, which was part of the latest batch of nodes written to.
+
+Normally, reads and writes are sent to all nodes in parallel, the params $w$ and $r$ tell us how many nodes to wait for.
+
+### Limitations of Quorum Consistency
+
+You can keep a smaller $w$ and $r$ than quorum — which will result in faster reads and writes (and higher availability) from the cluster, but will increase the probability of stale values being read.
+
+However, even with the quorum condition, there are other edge cases depending on the implementation:
++ If a _[[#Sloppy Quorums and Hinted Handoff|sloppy quorum]]_ is used, the writes may end up on different nodes than the reads, with no overlap.
++ If two writes happen concurrently, it is not clear which one happened first. In this case you may need to [[#Handling Write Conflicts|merge the concurrent writes]]. If winners are picked from timestamps, then we can lose writes to clock skew.
++ If a write happens concurrently with a read, the write may have reflected only on a few replicas at the time of the read.
++ If a write succeeded on some replicas but failed on others, but overall succeeded on fewer than $w$ replicas, it is _not rolled back_ on the replicas where it was written. The write itself is reported as "failed", but subsequent reads may or may not return values from that write.
++ If a node with the new value dies, and gets restored from a replica which has an old value, the number of nodes with the latest value can fall below $w$.
++ Other timing related issues are possible.
+
+Therefore, in practice, quorums aren't a silver bullet. In particular, we do not get the guarantees discussed in [[#Replication Lag]], and those stronger guarantees require transactions or consensus.
+
+#### Monitoring staleness
+
+Monitoring for stale data is easier in leader-based replication, because you can simply subtract the positions of the followers' latest update with the state of the leader to find the replication lag (the writes are applied in the same order between the leader and the follower).
+
+In leaderless systems, there is no fixed order in which writes are applied, making monitoring for lag a lot harder. Also, if the DB uses only read-repair without anti-entropy, there's theoretically no limit to how old a value may be. 
+
+### Sloppy Quorums and Hinted Handoff
+
+Leaderless replication is appealing for high availability low latency applications, with some level of tolerance towards stale data. However, quorums are susceptible to network interruptions which can cut off a large number of nodes from a particular client — leaving that client unable to connect to enough nodes to form the quorum, thereby completely cutting off reads/writes for that client. Even though the nodes are alive, for that particular client they might as well be dead.
+
+In a large cluster, it is likely that the client can connect to _some_ database nodes, but the database nodes it can connect to are not necessarily part of the $n$ nodes which are the nodes on which the data lives, and therefore cannot assimilate enough nodes to form a quorum. In this case, we have a choice:
++ Is it better to return errors for all read/write requests which cannot reach a quorum?
++ Or should we accept writes anyway, and write them to some nodes that are reachable, but not part of the $n$ nodes on which the data usually lives?
+
+The latter is called a _sloppy quorum_ — writes and reads still need the w/r quorums, but the votes can come from nodes that aren't a part of the $n$ "home" nodes for a value. (Analogy: if you lock yourself out of your house, you may go to your neighbor and ask them if you can stay on their couch temporarily.)
+
+Once the network interruption is fixed, the temporary writes are then handed off to the "home" nodes which came back online — this is called a _hinted handoff_ (your neighbor tells you to go back home once your key is found).
+
+Sloppy quorums increase write throughput, as you can find your $w$ write nodes even outside of the original $n$ home nodes which house the value. But this changes the quorum condition — even if the condition is satisfied, you might get stale data because the latest value may have been (temporarily) written to nodes outside of $n$. Therefore it isn't really a quorum at all — it's just an assurance of durability: your writes are stored on some $w$ nodes _somewhere_. There is no guarantee a read of $r$ nodes will see it until the hinted handoff is complete.
 
 ----
 
 ## References
 1. Designing Data Intensive Applications - Chapter 5
+
+[dynamo]: https://www.allthingsdistributed.com/2007/10/amazons_dynamo.html
