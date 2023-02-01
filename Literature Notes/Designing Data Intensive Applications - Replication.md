@@ -263,6 +263,58 @@ Once the network interruption is fixed, the temporary writes are then handed off
 
 Sloppy quorums increase write throughput, as you can find your $w$ write nodes even outside of the original $n$ home nodes which house the value. But this changes the quorum condition — even if the condition is satisfied, you might get stale data because the latest value may have been (temporarily) written to nodes outside of $n$. Therefore it isn't really a quorum at all — it's just an assurance of durability: your writes are stored on some $w$ nodes _somewhere_. There is no guarantee a read of $r$ nodes will see it until the hinted handoff is complete.
 
+#### Multi-Datacenter Operation
+
+In general, leaderless replication for multiple datacenters involves $n$ replicas across datacenters, where writes are written to nodes across all datacenters, but read quorums are picked from the local datacenter only (in order to prevent high latency for reads). The higher-latency writes to other datacenters are often configured to happen asynchronously. (Cassandra, Voldemort)
+
+### Detecting Concurrent Writes
+
+![[Pasted image 20230130163433.png]]
+
+Here:
++ Node 1 receives A, then never receives B due to a transient outage.
++ Node 2 receives A then B.
++ Node 3 receives B then A.
+
+In this case, the database can become permanently inconsistent, unless we handle the write conflicts and converge to the same value. It is necessary to understand the internals of the conflict handling so as to never lose any data.
+
+#### Last write wins (LWW)
+
+We need to know which is the most "recent" value, and discard the other writes. In a concurrent system, that doesn't exactly make sense (A and B are technically happening in undefined order in the example above). So we can force an arbitrary order on them, e.g. attaching a timestamp to each write, and picking the biggest timestamp as the most "recent".
+
+If losing data is not acceptable, LWW is a poor choice for conflict resolution. All other writes than the "latest" are silently discarded, reducing durability of data. The only safe way of using a DB with LWW is to ensure every key is written only once — is unique and immutable. Therefore there will be no concurrent updates to the same key.
+
+#### "Happens-before" and concurrency
+
+An operation A _happens before_ another operation B if B knows about A, depends on A, or builds upon A in some way (e.g. a write of a value, followed by an increment of the same value). Two operations are _concurrent_ when neither of them happens before the other (i.e. you can say both operations are independent).
+
+![[Pasted image 20230130170750.png]]
+
+![[Pasted image 20230130172415.png]]
+_Causal dependencies from the above dataflow diagram._
+
+The arrows indicate which operation _happened before_ which other operation. The clients are never fully up-to-date with the server data (because there is another operation going on concurrently), but old versions of the data are overwritten eventually, and no writes are lost.
+
+The server can determine whether two operations are concurrent by looking at the version number. Algo:
++ Server maintains a version number for every key, increments version number every time the key is written, and stores the new version number along with the value written.
++ When a client reads a key, server return all non-overwritten values, as well as the latest version number. The client must read the key before writing.
++ The client writes the key by including the version number from the last read (this tells the server which previous state the write is based on), and merging together all the received values from the prior read with the new data.
++ When the server receives a write with a particular version number, it overwrites all values with that version number or less. It must keep values with a higher version number (those are concurrent with the incoming write).
+
+#### Merging concurrently written values
+
+In the above cart example, two _sibling_ values like `[milk, eggs, flour]` and `[eggs, milk, ham]` will be merged as `[milk, eggs, flour, ham]`, i.e. taking the union of the two sets. In the case of _adding_ items to cart, this merging can be done by union, but this will break down if we can also _remove_ items from the cart.
+
+This is a complexity that the client needs to handle. Generally for removing items, we add a piece of data with a version number which indicates an item has been removed, instead of actually deleting the piece of data (this is called a _tombstone_). Merging logic can get generally complex and error-prone. Various data structures like **CRDTs** are used to automatically merge siblings in sensible ways, including preserving deletions.
+
+#### Version Vectors
+
+The above example works for a single replica only. When using leaderless replication, we need a different approach.
+
+We need to maintain version numbers per key but also _per replica_. Each replica increments its own version number when processing a write, and also keeps track of version numbers it has seen from other replicas. The information indicates which values to overwrite and which values to keep as siblings.
+
+The collection of version numbers from all replicas is called the **version vector**. Version vectors are sent from the DB replicas to the clients when values are read, and need to be sent back to the DB when the value is subsequently written.
+
 ----
 
 ## References
