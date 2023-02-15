@@ -129,10 +129,44 @@ UPDATE figures SET position = 'c4' WHERE id = 1234;
 
 COMMIT;
 ```
-The `FOR UPDATE` clause indicates that the database should take a lock on all rows returned by this query.
+> The `FOR UPDATE` clause indicates that the database should take a lock on all rows returned by this query.
 
+The application explicitly locks objects which are going to be updated. The problem with this approach is that the programmer might _forget_ to update the application logic to add this lock and introduce a race condition.
 
+#### Automatically detecting lost updates
 
+Execute the transactions in parallel, and if the transaction manager detects a lost update, abort the transaction and retry the read-modify-write cycle.
+
+The advantage is that DBs can perform this in conjuction with the snapshot isolation implementation -- PostgreSQL's repeatable read, Oracle's serializable, and SQL Server's snapshot isolation levels automatically detect lost updates. 
+
+This does not require any app-specific code, and is therefore less error-prone.
+
+#### Compare-and-set
+
+The purpose of this operation is to avoid lost updates by allowing an update to happen only if the value has not changed since you last read it. If the current value does not match what you previously read, the update has no effect, and the read-modify-write cycle must be retried.
+
+```sql
+-- This may or may not be safe, depending on the database implementation
+
+UPDATE wiki_pages
+SET content = 'new content'
+WHERE id = 1234 
+AND content = 'old content';
+```
+
+However, if the database allows the WHERE clause to read from an old snapshot, this statement may not prevent lost updates, because the condition may be true even though another concurrent write is occurring. Check whether your database’s compare-and-set operation is safe before relying on it.
+
+#### Conflict resolution and replication
+
+All the above get more complex in replicated DBs, as there are copies of the data on multiple nodes which require concurrent updates. 
+
+Locks and compare-and-set operations assume a single copy of the data. However, in DBs with multi-leader or leaderless replication, these techniques do not apply.
+
+A common approach in such replicated databases is to allow concurrent writes to create several conflicting versions of a value (also known as siblings), and to use application code or special data structures to resolve and merge these versions after the fact.
+
+Atomic operations which are commutative (adding items to a set, incrementing a counter etc.) work well over replication -- Riak can prevent lost updates across replicas using these kinds of operations, as it doesn't matter which replica propagation added the new data first. The updates are automatically merged together to lose no information.
+
+LWW (last write wins) conflict resolution on the other hand often loses data -- but is unfortunately the default in most DBs.
 
 ----
 
