@@ -93,6 +93,93 @@ In practice, we do a few extra things:
 
 ![[Pasted image 20230116145120.png]]
 
++ B-trees divide data into fixed size pages instead of variable-length segments
++ Pages reference each other through memory references (see diagram).
++ The *branching factor* of the B-tree is the number of references at each level. This is a constant.
+  + The diagram has a branching factor of 6.
+  + Generally set to a few hundred for an actual implementation.
++ Inserting a key into a B-tree involves:
+  + Finding the page where the data has to be inserted.
+  + If the page is nearly full, then the page is split down the middle and the data inserted in one of the resulting child pages.
+  + The updated midpoint reference is added as a key to the parent page.
++ A B-tree with a branching factor of 500, and 4KB pages, can store and reference data up to **256 terabytes!**
+
+In practice, B-trees need some extra things to be implemented for reliability.
+
++ We use a *write ahead log (WAL)*, an append-only file which B-tree modifications are written to before the tree itself is modified. This way, if the system crashes while writing, the WAL can be used to restore the tree to a consistent state.
++ Concurrency control with latches is needed to prevent multiple threads from seeing the tree in an inconsistent state. This is not a problem with LSM-Trees, because all the merging happens in the background, on segments that are older than the one that's currently being written to actively.
+
+#### Optimizations
+
++ Some databases keep a copy-on-write mechanism instead of maintaining a WAL. A modified page is written to a different location, and the parent page is pointed at the new location. Also helps in concurrency.
++ Don't store the entire key, abbreviate it. At intermediate levels, you know that the keys are between specific ranges, hence you can use that to store a subset of the key information, therefore taking less space allowing to pack more keys and have a higher branching factor with the same page size.
+  + This optimization is generally called a B+ tree.
++ Adjacent leaf nodes can be laid out in a sequential order in the disk, however this is difficult to maintain over a lot of modifications to the tree.
++ Leaf nodes pointing to siblings (both left and right) can be done to avoid having to jump back to the parent in order to get the previous or next page when scanning across a bunch of sequential keys.
+
+### LSM Trees vs B Trees
+
+Advantages of LSM Trees:
+
++ B-trees write each piece of data at least twice (once to the WAL, once to the tree, maybe more depending on page split). An LSM tree also rewrites data multiple times due to compaction and merging (_write amplification_).
+  + LSM trees typically have less write amplification than B-trees (depends on implementation).
++ They write more compact and sequential SSTables, rather than B-trees which write pages to (usually) random sectors of the disk.
++ They have more compressible files. B-trees show more fragmentation, especially when compared to level-compacted LSM-trees.
+
+> 💡 **Write amplification.** One write to the database resulting in multiple writes to the disk. This can cause performance issues over the lifetime of the database if the bottleneck to performance is the disk write speed.
+
+Downsides of LSM-Trees:
+
++ Compaction process for LSM-trees requires resources which can be limited on a disk, and can hence interfere with the logging process. B-trees can be more predictable.
++ On high write throughputs, it is possible that the storage engine does not throttle the writes at all (this is typically true in practice) and therefore the resources are starved for the compaction process. This will require external monitoring -- because otherwise the disk might fill up, and also fewer compacted segments means that future reads will become slower and slower.
++ Strong transactional semantics are easier in B-trees, because each key resides in exactly one place in the memory (while in LSM trees, keys are duplicated across segments and even within the written segment).
+
+### Other Indexes
+
+A secondary index might either reference data kept in a different location (a _heap file_) or might directly store the data linked within the index itself (a _clustered index_). An example of the latter is InnoDB, which stores the primary key as a clustered index, and then secondary keys/indices point to the primary key. This might be done because the hop from a heap file to an index is too much of a performance hit to bear.
+
+A good midway between them is a _covering index_, which is an index which stores only _some columns_, not all. Those columns are said to be _covered_ by the index -- for the rest of the column data you need to go to the entry in the heap file.
+
+Clustered and covering indices can speed up reads of data, but require additional storage and add overhead on writes. Also transactional guarantees on these require extra work.
+
+#### Multi-column indices
+
+_Concatenated indices_ are fairly common, where we simply combine the indices into a single index in some order defined by the index. For example, `(lastName, firstName)` is useful to search by the last name, or even by the full name, but it is useless for searching specifically by the first name.
+
+Apart from this we usually use specialized data structures for indices on specific usecases (like R-trees for spatial indices).
+
+#### Full-text and fuzzy search
+
+Lucene is a DB engine which allows fuzzy searching. The index for the SSTable-style term dictionary used by Lucene is a finite state automaton over the characters in the keys (similar to a trie) which allows searching for words within a certain edit distance efficiently.
+
+Full-text search also adds features for synonyms, grammatical corrections and so on. Full scope is outside the book.
+
+### In-Memory Databases
+
+The limitations of disks can be avoided by storing the entire database in memory, which is increasingly possible as RAM becomes cheap. The main issue with in-memory DBs then becomes durability, which can be solved by:
++ Special hardware (e.g. battery powered RAM)
++ Writing a log of changes to disk
++ Periodic snapshots to disk
++ Replicating across multiple machines
+
+When the DB is restarted, it needs to reload state from disk or across the network from a replica. But the reads are still served entirely from memory.
+
+The performance advantages aren't because of the read speed from the memory instead of disk -- rather it is from the fact that you don't have to create the overhead of complex data structures (like B-trees or LSM-trees) specifically for the purpose of writing to a disk.
+
+They can also directly store data structures which are difficult to store in disk-based structures, like priority queues and sets (Redis offers this).
+
+We can also store more data than available memory, by evicting least recently used data to the disk, and bringing it back to the memory when requested (similar to how the OS handles memory pages). However, the entire index for the data must fit in memory.
+
+## Transaction Processing or Analytics?
+
+_Transaction processing_, also called _OLTP_ (Online Transaction Processing), is a pattern of database access which involves low-latency reads and writes, for relatively small amounts of data. The application is generally interactive and usually centres around the latest state of data, with small random-access reads and writes.
+
+In contrast, _online analytical processing_ (OLAP) involves accessing specific data and pulling out measures like aggregates, from a massive store of data. This involves bulk import while writing and scanning over large records while reading, and relates to historical data as opposed to latest information. This is done usually by internal business analysts to gather insights from the database.
+
+In the past, SQL systems were generally used for both OLAP and OLTP. However, these days OLAP is being moved over to specialized _data warehouses_.
+
+### Data Warehousing
+
 #todo
 
 ----
