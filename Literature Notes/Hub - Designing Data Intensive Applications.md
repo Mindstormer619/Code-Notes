@@ -5,6 +5,6 @@
 3. [[Designing Data Intensive Applications - Storage And Retrieval]]
 4. #todo 
 5. [[Designing Data Intensive Applications - Replication]]
-6. #todo 
+6. [[Designing Data Intensive Applications - Partitioning]]
 7. [[Designing Data Intensive Applications - Transactions]]
 8. 

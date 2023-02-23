@@ -15,7 +15,7 @@ This often creates complexities and difficulty in scaling the system. When you w
 
 A system which relies on homogenous nodes without this distinction of masters and slaves seems much simpler.
 
-## Masterless replication and HA
+## Masterless replication and High Availability
 
 Traditional SQL databases scale in two ways, the first is Replication or a master-slave architecture. The idea is simple enough, you add replica databases that simply hold the same data that your _master_ database does. These databases may be running as different processes, on different machines, or even in different corners of the world.
 
