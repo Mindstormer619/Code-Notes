@@ -46,6 +46,8 @@ This technique is fairly good at distributing keys evenly. The partition boundar
 > 
 > This is rarely used in practice in databases. Ideally avoid this term and just say "hash partitioning".
 
+^ecaa6e
+
 Unfortunately we lose the ability to efficiently run range queries. Keys that were once adjacent are now scattered across all partitions.
 
 > In MongoDB, if you have enabled hash-based sharding mode, any range query has to be sent to all partitions. Range queries on the primary key are not supported by Riak, Couchbase, or Voldemort.
@@ -98,7 +100,93 @@ In practice, we do not have distributed transactions to update the global indexe
 
 ## Rebalancing Partitions
 
-#todo 
+As more CPUs, RAM, disks and machines are added/removed from a DB cluster, we need to move data and requests from one node to the other. The process of moving load from one node in the cluster to another is called **rebalancing**.
+
+Rebalancing requirements:
++ After rebalancing, the load (data stored, reads/writes) should be shared fairly between nodes in the cluster.
++ While rebalancing is happening, DB continues to accept reads and writes.
++ No more data than necessary should be moved between nodes — reduce I/O load.
+
+### Rebalancing Strategies
+
+#### DO NOT: Hash Mod N
+
+You can very easily `hash mod N` the key hash in order to find the partition, but there is a catch. If the number of nodes `N` changes, most of the keys will need to be moved from one node to another. This makes rebalancing expensive.
+
+#### Fixed number of partitions
+
+Simple solution: create many more partitions than there are nodes, and assign several partitions to each node. E.g. a DB running on a cluster of 10 nodes may be split into 1000 partitions — 100 partitions per node.
+
+Now if a node is added to the cluster, the new node can _steal_ a few partitions from every existing node until the partitions are fairly distributed once again. If a node is removed from the cluster, this happens in reverse.
+
+![[Pasted image 20230224200517.png]]
+
+Only entire partitions are moved between nodes, keeping the same number of partitions and assignment of keys to partitions. The change of assignment is not immediate — takes some time to transfer large data over the network — so the old assignment of partitions is used for reads/writes that happen while the transfer is in progress.
+
+> This approach is used in Riak, Elasticsearch, Couchbase, Voldemort.
+
+Number of partitions is usually fixed when the DB is first set up, and isn't changed after. This is operationally simpler, so most fixed-partition DBs choose not to implement partition splitting even if they can. You need to choose a high enough number to accommodate future growth, but too high a number comes with management overhead.
+
+Ideally for this kind of rebalancing, the dataset size should not change too much over time. Highly variable dataset sizes will require a change in partition count.
+
+#### Dynamic Partitioning
+
+For DBs which use [[#Key-Range Partitioning]], a fixed number of partitions with fixed boundaries is not a good idea — if you get the boundaries wrong, it is tedious to reconfigure all partitions manually.
+
+Therefore key-range partitioned DBs create partitions dynamically. When a partition exceeds a configured size, it is split into two partitions. Conversely, if a lot of data is deleted and a partition shrinks below some threshold, it can be merged with an adjacent partition.
+
+> E.g. HBase, RethinkDB.
+
+After a large partition has been split, one of its two halves can be transferred to another node in order to balance the load (HBase does this through HDFS).
+
+An advantage is that the number of partitions adapts to the total data volume, creating smaller partition overhead.
+
+A caveat is that an empty DB starts out with a single partition. While the dataset is small — until first partition split is hit — all writes have to be processed by a single node while other nodes sit idle. To mitigate this, HBase and MongoDB allow *pre-splitting*, with an initial set of partitions, but this means you already know what the key distribution needs to look like.
+
+This can also be used in hash partitioning schemes.
+
+#### Partitioning proportionally to nodes
+
+In both of the above cases, the number of partitions is independent of the number of nodes. A third option is to make the number of partitions proportional to the number of nodes — a fixed number of partitions *per node*. In this case, the size of each partition grows proportionally to the dataset size while number of nodes remains unchanged, but when you increase the number of nodes, the partitions become smaller.
+
+> Cassandra, Ketama.
+
+When a new node joins the cluster, it randomly chooses a fixed number of existing partitions to split, and takes ownership of one half of each of those splits while leaving the other half in place. Can produce unfair splits, but when averaged over large number of partitions it becomes fair (Cassandra: 256 partitions per node by default, Cassandra v3.0 introduces a new alternative rebalancing algorithm that avoids unfair splits). 
+
+Picking partition boundaries randomly requires that hash based partitioning is used — this aligns closely with the concept of [[#^ecaa6e|consistent hashing]].
+
+### Ops: Automatic or Manual Rebalancing?
+
+There is a gradient between fully automatic rebalancing (system decides automatically when to move partitions) and fully manual (assignment of partitions is explicitly configured by an admin). E.g. Couchbase, Riak, Voldemort generate a suggested partition assignment, but require an admin to commit it.
+
+It can be a good thing to have a human in the loop:
++ Fully automated rebalancing is convenient, but unpredictable.
++ Rebalancing is expensive, can overload the network or nodes and harm the performance of other requests.
++ In combination with automatic failure detection, automatic rebalancing can be dangerous. Say one node is overloaded and slow to respond. Other nodes think it's dead, and automatically rebalance the cluster to move load away from it. The rebalancing reads put additional load on the overloaded node, other nodes and the network, making the situation worse and causing a cascading failure.
+
+## Request Routing
+
+How does the client know which node to connect to? Rebalancing changes assignment of partitions to nodes. This is an instance of a more general problem called **service discovery**, not just limited to DBs.
+
+Different approaches:
+1. Allow clients to contact any node (e.g. via round-robin load balancer). Node forwards the request to the appropriate node, receives the reply, and passes the reply back to the client. *Nodes are partition-aware.*
+2. Send all requests from clients to a routing tier, which acts as a partition aware load balancer. *Routing tier is partition aware.*
+3. Require that clients are aware of the partitioning assignments. In this case the client connects directly to the appropriate node. *Client is partition aware.*
+
+![[Pasted image 20230224211837.png]]
+
+How does the component aware of partitioning learn about changes to the partition assignments?
+
+Many distributed data systems rely on a separate coordination service such as **ZooKeeper** to keep track of this cluster metadata. The routing tier / client can subscribe to this info in ZooKeeper, and it notifies them so they can keep routing info up-to-date.
+
+![[Pasted image 20230224212114.png]]
+
+> + LinkedIn's Espresso uses Helix for cluster management, which in tern uses ZooKeeper.
+> + HBase, SolrCloud, Kafka also use ZooKeeper.
+> + MongoDB has a similar architecture but uses its own *config server* implementation and `mongos` daemons as the routing tier.
+> + Cassandra and Riak use **gossip protocol** among nodes to disseminate changes in cluster state (basically Approach 1 above).
+> + Couchbase does not rebalance automatically. Normally configured with a routing tier called *moxi*.
+
 
 ----
 
