@@ -29,4 +29,4 @@ fun main() {
 ----
 
 ## References
-1. [[Fleeting Notes/Kotlin Delegation]]
+1. [[Fleeting/Kotlin Delegation]]

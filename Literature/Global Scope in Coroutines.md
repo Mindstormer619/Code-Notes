@@ -8,4 +8,4 @@
 ----
 
 ## References
-1. [[Fleeting Notes/Global Scope in Coroutines]]
+1. [[Fleeting/Global Scope in Coroutines]]

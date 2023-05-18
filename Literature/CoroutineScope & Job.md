@@ -12,5 +12,5 @@ You can construct an instance using `CoroutineScope()` or `MainScope()` factory 
 ----
 
 ## References
-1. [[Fleeting Notes/CoroutineScope & Job]]
+1. [[Fleeting/CoroutineScope & Job]]
 2. https://kotlinlang.org/docs/coroutines-basics.html#structured-concurrency

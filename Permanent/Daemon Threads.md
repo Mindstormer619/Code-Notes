@@ -21,4 +21,4 @@ daemonThread.start();
 ----
 
 ## References
-1. [[Fleeting Notes/Daemon Threads]]
+1. [[Fleeting/Daemon Threads]]
