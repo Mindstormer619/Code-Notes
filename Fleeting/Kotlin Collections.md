@@ -37,9 +37,20 @@ The default implementation of `MutableMap` – [`LinkedHashMap`](https://kotlinl
 
 `LinkedHashMap`: Hash table and linked list implementation of the `Map` interface, with predictable iteration order. This implementation differs from `HashMap` in that it maintains a doubly-linked list running through all of its entries. This linked list defines the iteration ordering, which is normally the order in which keys were inserted into the map (_insertion-order_).
 
++ `HashMap` is implemented as an array of linked lists. Each element in the array is called a bucket and contains a linked list of entries.
++ A hash code is calculated for each key using the `hashCode()` method. The hash code is used to determine in which bucket the key-value pair should go.
++ Collisions are handled using chaining. This means if two keys hash to the same bucket, they are stored as a linked list in that bucket.
++ The load factor determines when to resize the hash map. The default load factor is 0.75, meaning once 75% of buckets have at least one entry, the hash map will resize.
++ Resizing works by creating a new bucket array of size `newCapacity` and rehashing all elements into this new array. This is an *O(n)* operation.
++ HashMap allows null keys and values. However, there can only be one null key in the map.
++ The `get()`, `put()`, `remove()`, `containsKey()` and `containsValue()` operations all run in *O(1)* time on average since we can hash directly to the bucket. However, resizing the map or iterating it requires *O(n)* time.
++ The initial capacity of a hash map is 16, and it's always a power of 2. Capacity is the number of buckets, not actual elements that can be stored.
++ Load factors over 0.75-0.8 usually don't improve space efficiency but only increase lookup times. So the default load factor of 0.75 provides a good space/time tradeoff.
++ `HashMap` is not thread-safe. `ConcurrentHashMap` is a thread-safe alternative.
 
+### Differences with `Hashtable`
 
-----
++ `Hashtable` is thread-safe via synchronization
++ `HashMap` allows adding one `Entry` with `null` as key, as well as `null` values -- `Hashtable` does not allow `null` at all.
++ Since JDK 1.8, `Hashtable` has been deprecated. Use `ConcurrentHashMap` -- does not synchronize over the whole map, for higher performance.
 
-## References
-1. https://kotlinlang.org/docs/collections-overview.html#collection-types
