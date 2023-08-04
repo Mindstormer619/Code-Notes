@@ -1,5 +1,6 @@
 # Spring Boot
 > Created: 2023-05-31 20:27
+> #todo Reformat
 
 Function -- to remove boilerplate
 
@@ -24,12 +25,13 @@ Function -- to remove boilerplate
 
 Spring Boot: smart defaults for configurations on Spring
 
+## Spring vs Spring Boot
+https://www.baeldung.com/spring-vs-spring-boot
 
-
->🔍 Baeldung
-
+Spring generally requires some setup (like min dependencies for a web project are `spring-web` and `spring-webmvc`) but Spring Boot does opinionated startup.
 
 ----
 
 ## References
 1. Chaitanya
+2. https://www.baeldung.com/spring-vs-spring-boot

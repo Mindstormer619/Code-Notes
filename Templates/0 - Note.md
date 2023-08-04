@@ -1,5 +1,8 @@
+---
+created: {{date}} {{time}}
+tags: 
+---
 # {{title}}
-> Created: {{date}} {{time}}
 
 
 
