@@ -153,4 +153,4 @@ Completed in 3371 ms
 ----
 
 ## References
-1. [[Fleeting/Concurrency vs. Parallelism Using Kotlin|Concurrency vs. Parallelism Using Kotlin]]
+1. [[2. Areas/Kotlin/Concurrency vs. Parallelism Using Kotlin|Concurrency vs. Parallelism Using Kotlin]]

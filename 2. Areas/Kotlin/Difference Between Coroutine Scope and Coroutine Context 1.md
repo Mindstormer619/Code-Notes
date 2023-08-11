@@ -126,5 +126,5 @@ runBlocking {
 ----
 
 ## References
-1. [[Fleeting/Difference Between Coroutine Scope and Coroutine Context|Difference Between Coroutine Scope and Coroutine Context]]
+1. [[2. Areas/Kotlin/Difference Between Coroutine Scope and Coroutine Context|Difference Between Coroutine Scope and Coroutine Context]]
 2. https://stackoverflow.com/a/54418265/3477606

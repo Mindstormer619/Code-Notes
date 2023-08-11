@@ -1,7 +1,7 @@
 ---
-created: {{date}} {{time}}
+created: <%tp.file.creation_date()%>
 tags: 
 ---
-# {{title}}
+# <%tp.file.title%>
 
-+ 
++ <%tp.file.cursor(1)%>

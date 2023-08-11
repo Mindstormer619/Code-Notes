@@ -1,6 +1,10 @@
 # Code Notes
 
-My repository of software-related notes, currently written in [Obsidian](https://obsidian.md).
+My repository of software-related notes, currently written in [Obsidian](https://obsidian.md). These notes are primarily written with one intended audience member: me. If you do get value out of these (or have any suggestions for improving them), [do let me know](https://t.me/Mindstormer619). 
+
+## Structure
+
+The main organization method is using the [PARA](https://fortelabs.com/blog/para/) system to provide actionable structure to my notes. This means that **absolute or relative path links are not permalinks!** The notes will keep moving around as I find new or different uses for them. Of course, if you clone this down and open the vault in Obsidian, you'll see inter-note links working perfectly fine (as Obsidian remaps links when notes are renamed or moved around).
 
 ## Reading these notes
 

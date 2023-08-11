@@ -25,4 +25,4 @@ You should only use denormalization if the benefits outweigh the drawbacks. Gene
 ----
 
 ## References
-1. [[Fleeting/Denormalization]]
+1. [[2. Areas/Databases/Denormalization]]

@@ -14,7 +14,7 @@ _Normalization_ is the idea of de-duplication -- you don't use free text, and in
 ## Disadvantages
 
 + Read time performance. If you want data that requires summarizing info in the table, or requires linking through to a foreign table to get the info, the joins / summarization queries can take much longer than just reading from a duplicate, single field that contains the data directly.
-+ Can make the schema much more complex and hard to change. In a [[Permanent/Denormalization|denormalized]] setting, we can keep the data that we want in a relatively freeform manner.
++ Can make the schema much more complex and hard to change. In a [[Denormalization|denormalized]] setting, we can keep the data that we want in a relatively freeform manner.
 	+ Consider for example, storing an address. Addresses are complicated by nature -- every area/country/city has different methods and conventions. To store the components of the address in a normalized way can make the schema _extremely_ complicated to create and change.
 
 
