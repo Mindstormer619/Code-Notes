@@ -2,3 +2,4 @@
 .stignore
 **/*.orig
 .stfolder/
+.stversions/
