@@ -3,3 +3,4 @@
 **/*.orig
 .stfolder/
 .stversions/
+.trash/
