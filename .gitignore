@@ -1,3 +1,4 @@
 .obsidian/
 .stignore
 **/*.orig
+.stfolder/
