@@ -70,7 +70,9 @@ The concept of size is highly contextual. Sam Newman urges people not to worry a
 > "Microservices buy you options."
 > ~ James Lewis, technical director @ ThoughtWorks.
 
-They _buy_ you _options_ -- it means they have a cost, and you must decide if the cost is worth the options. The resulting flexibility can be on organizational, technical, scale, or robustness axes.
+^bae16d
+
+They _buy_ you _options_ -- it means they have a cost, and you must decide if the cost is worth the options. The resulting flexibility can be on organizational, technical, scale, or robustness axes. ^82dcef
 
 Adopting microservices is not binary, it's more like turning a dial. As you turn up the dial, you have more flexibility but also more pain points. Strongly advocate incremental adoption, and assess the impact as you go.
 
