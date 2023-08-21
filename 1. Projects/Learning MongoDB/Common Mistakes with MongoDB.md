@@ -54,6 +54,23 @@ To be confident of your writes, make sure that journaling is [enabled (`storage.
 
 In searches and aggregations, you will often want to sort your data. Hopefully, it is done in one of the final stages, after filtering the result, to reduce the amount of data being sorted. Even then, [you will need an index that can cover the sort](https://studio3t.com/knowledge-base/articles/mongodb-index-strategy/). Either a single or compound index will do this.
 
+There is a [32MB memory limit on the combined size of all documents in the sort operation](https://docs.mongodb.org/manual/reference/limits/#Sort-Operations) and if MongoDB hits the limit, it  will either produce an error or occasionally [just return an empty set of records](https://www.sitepoint.com/7-simple-speed-solutions-mongodb/).
+
+## Lookups without supporting indexes
+
+Lookups perform a similar function to a SQL join. To perform well, they require an index on the key value used as the foreign key. This isn’t obvious because the use isn’t reported in `explain()`. These indexes are in addition to the index recorded by `explain()` that is used by the `$match` and `$sort` pipeline operators when they occur at the beginning of the pipeline. [Indexes can now cover any stage](https://docs.mongodb.com/manual/core/aggregation-pipeline/#aggregation-pipeline-operators-and-performance) an aggregation pipeline.
+
+## Not using multi-updates
+
+The [`db.collection.update()`](https://docs.mongodb.com/manual/reference/method/db.collection.update/) method is used to modify part or all of an existing document or replace an existing document entirely, depending on the [update parameter](https://docs.mongodb.com/manual/reference/method/db.collection.update/#update-parameter) you provide. It is less obvious that it doesn’t do all the documents in a collection unless you set the [multi parameter](https://docs.mongodb.com/manual/reference/method/db.collection.update/#multi-parameter) to update all documents that match the query criteria.
+
+> By default, the [`db.collection.update()`](https://www.mongodb.com/docs/manual/reference/method/db.collection.update/#mongodb-method-db.collection.update) method updates a **single** document. Include the option [multi: true](https://www.mongodb.com/docs/manual/reference/method/db.collection.update/#std-label-multi-parameter) to update all documents that match the query criteria.
+
+## Forgetting the significance of the order of keys in a hash object
+
+BSON attaches significance to order when doing searches. [The order of keys within embedded objects matters in MongoDB](http://devblog.me/wtf-mongo), i.e. `{ firstname: "Phil", surname: "factor" }` does not match `{ surname: "factor", firstname: "Phil" }`. This means that you have to preserve the order of name/value pairs in your documents if you want to be sure to find them.
+
+
 ----
 
 ## References
