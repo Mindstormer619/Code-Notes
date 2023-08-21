@@ -21,6 +21,8 @@ git add $path
 git checkout .
 ```
 
+Currently I have a bug with Obsidian/Syncthing where it randomly deletes nearly all my notes. When that happens, I need to find the specific commit that deletes all the notes and revert the deletes. The commit _may_ have additional changes made in some files, or new files added, which _shouldn't_ be reverted.
+
 ----
 
 ## References
