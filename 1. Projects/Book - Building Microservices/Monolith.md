@@ -24,7 +24,24 @@ It's simpler to deploy than a [[Microservices|microservice]], but the downside i
 
 > ☝ Shopify is an example of an organization that uses this well.
 
-#todo [[2023-08-16]]
+## Distributed Monolith
+
+Consists of multiple services, but for whatever reason, they all need to be deployed together. DON'T DO THIS. 
+
+> "A distributed system is one in which the failure of a computer you didn't even know existed can render your own computer unusable."
+> ~ Leslie Lamport
+
+It has all the disadvantages of both monoliths and a distributed system. It usually results in environments where not enough focus was placed on information hiding and cohesion of business functionality. The highly coupled architecture causes changes to ripple across service boundaries.
+
+## Con: Delivery Contention
+
+Delivery contention results when different developers want to change the same piece of code, or different teams want to push functionality at different times. Since the entire monolith needs to be deployed together, this can cause issues in delivery.
+
+There is a general confusion along the lines of who owns what (somewhat mitigated in [[#Modular Monolith]] models). This is generally a much bigger problem in monoliths than [[Microservices]].
+
+> ☝ Consider the issues we had in GS with deployment queues (_queues_ is a strong word, it was basically first-come-first-served fights because there was no _automated_ queue to place your build on) on Thursday -- builds took over an hour to run, and if you didn't "reserve" your build right when the previous build ended, you could not run your build.
+
+## Pros of Monoliths
 
 
 
