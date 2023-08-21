@@ -8,6 +8,12 @@ alias:
 ----
 # Common Mistakes with [[MongoDB]]
 
+- Even though MongoDB doesn’t enforce it, it is vital to design a schema.
+- Likewise, indexes have to be designed in conjunction with your schema and access patterns.
+- Avoid large objects, and especially large arrays.
+- Be careful with MongoDB’s settings, especially when it concerns security and durability.
+- MongoDB doesn’t have a query optimizer, so you have to be very careful how you order the query operations.
+
 In hopes of making it easier for other people, here is a list of common mistakes.
 
 ## Creating a MongoDB server without authentication
@@ -69,6 +75,17 @@ The [`db.collection.update()`](https://docs.mongodb.com/manual/reference/method/
 ## Forgetting the significance of the order of keys in a hash object
 
 BSON attaches significance to order when doing searches. [The order of keys within embedded objects matters in MongoDB](http://devblog.me/wtf-mongo), i.e. `{ firstname: "Phil", surname: "factor" }` does not match `{ surname: "factor", firstname: "Phil" }`. This means that you have to preserve the order of name/value pairs in your documents if you want to be sure to find them.
+
+> 💡 **This matters for embedded objects!** Say your document had `firstname` and `surname` as top-level fields here, then the flipped query would work, because the parameters in the object sent to `find()` are fields which are AND-ed together. But say you had the structure as `{name: {firstname: "Foo", surname: "Bar"}}` then it matters which order you search for them. See [this page](https://devblog.me/wtf-mongo) for more.
+
+## Confusing ‘null’ and ‘undefined’
+
+`undefined` is ‘deprecated’ in BSON and converted to `$null` which isn’t always a happy solution. [Avoid using ‘undefined’ in MongoDB](https://github.com/meteor/meteor/issues/1646#issuecomment-29682964).
+
+## Using `$limit()` without `$sort()`
+
+`$limit()` should never be in the final version of the code, unless you first use `$sort`. This is because you can’t otherwise guarantee the order of the result and you won’t be able to reliably ‘page’ through data. You get different records in the top of the result depending on the way you’ve sorted it. To work reliably, queries or aggregations must be ‘deterministic’.
+
 
 
 ----
