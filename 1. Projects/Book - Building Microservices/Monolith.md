@@ -43,10 +43,16 @@ There is a general confusion along the lines of who owns what (somewhat mitigate
 
 ## Pros of Monoliths
 
+Mainly:
+- Simpler deployment topology
+- Simpler dev workflows, monitoring, troubleshooting, E2E testing
+- Simplified code reuse (all the code is in the same place/process).
 
+Don't consider monoliths as a legacy architecture! It's a perfectly valid architecture choice, and probably the right one for your application. Consider monolithic architecture as the _default option_. You should look for reasons to be _convinced_ to use microservices, rather that making microservices the default.
 
 
 ----
 
 ## References
-+ <% tp.file.cursor(2) %>
++ [[1. Projects/Book - Building Microservices/README|Book - Building Microservices]]
++ [[2023-08-16]]
