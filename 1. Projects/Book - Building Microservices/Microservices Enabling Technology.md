@@ -47,9 +47,9 @@ The Big Three -- GCP, Azure, AWS. They provide a huge array of managed service a
 
 > 💡 **Consider the TW Technology Radar.** [This page](https://www.thoughtworks.com/en-in/radar/techniques?blipid=202304013) on using CI/CD infrastructure as a service highly recommends using managed services for CI/CD.
 
-Serverless technologies hide the underlying machines and abstract the runtime. Message brokers, storage and DBs are often available as serverless 
+Serverless technologies hide the underlying machines and abstract the runtime. Message brokers, storage and DBs are often available as serverless offerings.
 
 ----
 
 ## References
-+ <% tp.file.cursor(2) %>
++ [[1. Projects/Book - Building Microservices/README|Book - Building Microservices]]
