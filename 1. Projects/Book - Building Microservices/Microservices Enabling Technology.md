@@ -35,6 +35,18 @@ If using a K8s cluster, ensure someone else manages the Kubernetes cluster for y
 
 > ☝ Container software include Podman, Buildah, and of course, [[Docker]].
 
+## Data Streaming
+
+[[Apache Kafka]] is probably the right bet for streaming data between microservice, offering message permanence, compaction, scale to handle large volumes of messages and stream processing in the form of [[ksqlDB]].
+
+> ☝ Debezium is an open source software to stream from traditional data sources to Kafka, allowing data streaming from things like SQL DBs.
+
+## Public Cloud & [[Serverless]]
+
+The Big Three -- GCP, Azure, AWS. They provide a huge array of managed service and deployment options. Wherever possible, use these managed services -- they are better able to deal with these tasks as they are specialized for it.
+
+> 💡 **Consider the TW Technology Radar.** [This page](https://www.thoughtworks.com/en-in/radar/techniques?blipid=202304013) on using CI/CD infrastructure as a service highly recommends using managed services for CI/CD.
+
 
 
 ----
