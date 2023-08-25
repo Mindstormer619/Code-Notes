@@ -1,7 +1,7 @@
 ---
 created: 2023-08-25 18:13
 modified: 2023-08-25 18:13
-alias: Book - Designing Data Intensive Applications
+alias: Book - Designing Data Intensive Applications, DDIA
 ---
 #### Summary
 + 
