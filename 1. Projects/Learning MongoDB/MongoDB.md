@@ -8,7 +8,7 @@ alias:
 ----
 # MongoDB
 
-MongoDB is a [[Document Databases|document DB]]
+MongoDB is a [[Document Databases|document DB]] 
 
 ----
 
