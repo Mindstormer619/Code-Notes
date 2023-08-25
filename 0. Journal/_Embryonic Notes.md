@@ -13,6 +13,6 @@ SORT Folder ASC, meta(file.link).path ASC
 ```dataview
 TABLE
 file.folder as "Folder"
-FROM #todo
+FROM #todo OR #distill 
 SORT file.folder ASC
 ```

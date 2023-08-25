@@ -15,6 +15,10 @@ An aggregation pipeline consists of one or more stages that process documents:
 
 > 💡 Aggregation pipelines run with the [`db.collection.aggregate()`](https://www.mongodb.com/docs/manual/reference/method/db.collection.aggregate/#mongodb-method-db.collection.aggregate) method do not modify documents in a collection, unless the pipeline contains a [`$merge`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/merge/#mongodb-pipeline-pipe.-merge) or [`$out`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/out/#mongodb-pipeline-pipe.-out) stage.
 
+## Examples
+
+### Quantities of medium pizza types
+
 ```js
 db.orders.aggregate( [
    // Stage 1: Filter pizza order documents by pizza size
@@ -35,6 +39,33 @@ The [`$match`](https://www.mongodb.com/docs/manual/reference/operator/aggregatio
 The [`$group`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/group/#mongodb-pipeline-pipe.-group) stage:
 - Groups the remaining documents by pizza `name`.
 - Uses [`$sum`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/sum/#mongodb-group-grp.-sum) to calculate the total order `quantity` for each pizza `name`. The total is stored in the `totalQuantity` field returned by the aggregation pipeline.
+
+### Total order value per date, and average order quantity:
+
+```js
+db.orders.aggregate( [
+   // Stage 1: Filter pizza order documents by date range
+   {
+      $match:
+      {
+         "date": { $gte: new ISODate( "2020-01-30" ), $lt: new ISODate( "2022-01-30" ) }
+      }
+   },
+   // Stage 2: Group remaining documents by date and calculate results
+   {
+      $group:
+      {
+         _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+         totalOrderValue: { $sum: { $multiply: [ "$price", "$quantity" ] } },
+         averageOrderQuantity: { $avg: "$quantity" }
+      }
+   },
+   // Stage 3: Sort documents by totalOrderValue in descending order
+   {
+      $sort: { totalOrderValue: -1 }
+   }
+ ] )
+```
 
 
 
