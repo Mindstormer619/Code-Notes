@@ -87,7 +87,9 @@ Some aggregation pipeline stages accept an [aggregation expression](https://www.
 + 1000 stages maximum in a single pipeline.
 + If [`allowDiskUseByDefault`](https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.allowDiskUseByDefault) is set to `true`, pipeline stages that need more than 100MB memory will write temp files to disk by default. To disable, use `{allowDiskUse: false}` option within the stage. If `allowDiskUseByDefault` is set to `false`, >100MB memory stages will raise an error unless overridden by the stage.
 
+## See More
 
+More info can be found in the book: [Practical MongoDB Aggregations by Paul Done](https://www.practical-mongodb-aggregations.com/front-cover.html).
 
 ----
 

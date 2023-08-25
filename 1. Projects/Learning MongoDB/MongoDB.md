@@ -8,11 +8,10 @@ alias:
 ----
 # MongoDB
 
-#todo 
-
+MongoDB is a [[Document Databases|document DB]]
 
 ----
 
 ## References
 + Awesome List at https://github.com/ramnes/awesome-mongodb#resources
-+ 
++ The Little MongoDB Book ~ Karl Seguin
