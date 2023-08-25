@@ -67,6 +67,12 @@ db.orders.aggregate( [
  ] )
 ```
 
+## Details
+
++ A stage does not have to output 1:1 for each input document -- it may produce more documents or filter them out.
++ The same stage may appear multiple times in the pipeline, except [`$out`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/out/#mongodb-pipeline-pipe.-out), [`$merge`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/merge/#mongodb-pipeline-pipe.-merge), and [`$geoNear`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/geoNear/#mongodb-pipeline-pipe.-geoNear).
++ To calculate averages and perform other calculations in a stage, use [aggregation expressions](https://www.mongodb.com/docs/manual/meta/aggregation-quick-reference/#std-label-aggregation-expressions) that specify [aggregation operators](https://www.mongodb.com/docs/manual/reference/operator/aggregation/#std-label-aggregation-expression-operators).
+
 
 
 ----
