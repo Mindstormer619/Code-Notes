@@ -5,7 +5,7 @@ A **fault** is when one component of a system deviates from the spec. Faults whi
 
 Faults can be unavoidable. For example, pretty much any system that isn't hosted with replication in space will die if the earth gets swallowed by a black hole. Hence, we design systems to be **fault-tolerant**, where we ensure that faults do not cause system failures.
 
-Types of faults are listed below:
+## Types of Faults
 
 + **Hardware Faults**
 	+ Hardware fails all the time. Hard disks have an [[MTTF]] of **10-50 years**. Hence on a cluster of 10,000 disks, one disk dies per day on average.

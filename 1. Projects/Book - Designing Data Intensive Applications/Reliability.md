@@ -8,7 +8,7 @@ alias:
 ----
 # Reliability
 
-**Reliability** is the idea that something _works correctly, even when things go wrong_. The system works correctly even in the face of adversity. Reliability is generally not optional (except in cases of prototypes, where reliability sacrifices should be stated explicitly).
+Reliability is the idea that something _works correctly, even when things go wrong_. The system works correctly even in the face of adversity. Reliability is generally not optional (except in cases of prototypes, where reliability sacrifices should be stated explicitly).
 
 Typical expectations:
 + The application performs the expected function.
