@@ -44,7 +44,7 @@ It is best to keep the number of array elements well below four figures. If the 
 
 You might think that you could get around this by not indexing arrays. Unfortunately, without the indexes, you can run into other problems. Because documents are scanned from start to end, it takes longer to find elements towards the end of an array, and [most operations dealing with such a document would be slow](http://grokbase.com/t/gg/mongodb-user/128r0h5gzw/inserting-into-300-000-size-embedded-array-is-slow-even-w-o-indexes).
 
-## Forgetting that the order of stages in an [[Mongo|aggregation]] matters
+## Forgetting that the order of stages in an [[MongoDB Aggregation Pipelines|aggregation]] matters
 
 For example, you need to make sure that the data is reduced as early as possible in the pipeline via `$match` and `$project`, sorts happen only once the data is reduced, and that lookups happen in the order you intend. Having a query optimizer that removes unnecessary work, orders the stages optimally, and chooses the type of join can spoil you. MongoDB gives you more control, but at a cost in convenience.
 
