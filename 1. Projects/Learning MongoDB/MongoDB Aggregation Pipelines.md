@@ -73,6 +73,20 @@ db.orders.aggregate( [
 + The same stage may appear multiple times in the pipeline, except [`$out`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/out/#mongodb-pipeline-pipe.-out), [`$merge`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/merge/#mongodb-pipeline-pipe.-merge), and [`$geoNear`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/geoNear/#mongodb-pipeline-pipe.-geoNear).
 + To calculate averages and perform other calculations in a stage, use [aggregation expressions](https://www.mongodb.com/docs/manual/meta/aggregation-quick-reference/#std-label-aggregation-expressions) that specify [aggregation operators](https://www.mongodb.com/docs/manual/reference/operator/aggregation/#std-label-aggregation-expression-operators).
 
+## Aggregation Pipeline Expressions[![](https://www.mongodb.com/docs/manual/assets/link.svg)](https://www.mongodb.com/docs/manual/aggregation/#aggregation-pipeline-expressions "Permalink to this heading")
+
+Some aggregation pipeline stages accept an [aggregation expression](https://www.mongodb.com/docs/manual/meta/aggregation-quick-reference/#std-label-aggregation-expressions), which:
+- Specifies the transformation to apply to the current stage's input documents.
+- Transform the documents in memory.
+- Can specify [aggregation expression operators](https://www.mongodb.com/docs/manual/reference/operator/aggregation/#std-label-aggregation-expression-operators) to calculate values.
+- Can contain additional nested [aggregation expressions.](https://www.mongodb.com/docs/manual/meta/aggregation-quick-reference/#std-label-aggregation-expressions)
+
+## Limitations
+
++ Each document in the result set is subject to the 16MB BSON document size limit. The limit only applies to the returned documents. During the pipeline processing, the documents may exceed this size.
++ 1000 stages maximum in a single pipeline.
++ If [`allowDiskUseByDefault`](https://www.mongodb.com/docs/manual/reference/parameters/#mongodb-parameter-param.allowDiskUseByDefault) is set to `true`, pipeline stages that need more than 100MB memory will write temp files to disk by default. To disable, use `{allowDiskUse: false}` option within the stage. If `allowDiskUseByDefault` is set to `false`, >100MB memory stages will raise an error unless overridden by the stage.
+
 
 
 ----
