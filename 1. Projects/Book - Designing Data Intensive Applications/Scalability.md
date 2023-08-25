@@ -5,7 +5,7 @@ The ability of the system to cope with increased [[Load]]. Scalable systems can 
 
 ## Performance
 
-**Throughput:** Records processed per unit time, or the total time taken to run a job on a dataset of a certain fixed size. This matters more for batch-processing systems.
+**Throughput:** Records processed per unit time, or the total time taken to run a job on a dataset of a certain fixed size. This matters more for batch-processing systems (☝ Hadoop).
 
 **Response Time:** Time between a client sending a request and receiving a response. Matters more for *online* systems. We consider this as a [[Response Time Percentiles|distribution of values]], not a single one.
 
