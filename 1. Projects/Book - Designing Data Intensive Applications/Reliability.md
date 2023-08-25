@@ -18,6 +18,8 @@ Typical expectations:
 
 Things can and *will* go wrong. Things that go wrong in systems are called [[Faults]]. A [[Failures|Failure]] is when a [[Faults|Fault]] causes the system as a whole to stop providing the required service to the user. We design systems to be fault-tolerant, which means that faults should not cause failures.
 
+Reliability is highly important, even in most noncritical applications. While [[High Availability]] might not be critically needed, things like permanent data loss etc. can cause loss of user trust / reputation, lost productivity, and huge revenue loss costs. Be very conscious when sacrificing reliability for any reason.
+
 ----
 
 ## References
