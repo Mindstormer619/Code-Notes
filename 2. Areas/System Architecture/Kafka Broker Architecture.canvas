@@ -1,0 +1,11 @@
+{
+	"nodes":[
+		{"id":"84eba69fb4068f16","x":-280,"y":-160,"width":250,"height":60,"type":"text","text":"Broker: the server"},
+		{"id":"3b1693b661ff84a2","x":-280,"y":-40,"width":250,"height":65,"type":"text","text":"Topic: storage, groups similar data"},
+		{"id":"34f0daf197ab8799","x":-280,"y":100,"width":250,"height":120,"type":"text","text":"Partition: smaller data storage, consumers subscribe to this"}
+	],
+	"edges":[
+		{"id":"ff62783b206479b0","fromNode":"3b1693b661ff84a2","fromSide":"top","toNode":"84eba69fb4068f16","toSide":"bottom"},
+		{"id":"d22f60d83722f6fe","fromNode":"34f0daf197ab8799","fromSide":"top","toNode":"3b1693b661ff84a2","toSide":"bottom"}
+	]
+}
