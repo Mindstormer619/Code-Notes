@@ -7,7 +7,7 @@ alias:
 
 # Apache Kafka
 
-It's cumbersome to store events in a DB. We can rather store it in a log.
+
 
 ----
 
