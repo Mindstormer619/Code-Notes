@@ -36,6 +36,7 @@ What does it take to build a linter?
 
 `var let = 1` is valid JS. `let var = 1` is not.
 
+BiomeJS and OxLint are probably the best modern options (both written in Rust)
 
 
 
