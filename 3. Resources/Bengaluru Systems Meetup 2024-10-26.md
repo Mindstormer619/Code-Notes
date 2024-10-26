@@ -31,7 +31,12 @@ What does it take to build a linter?
 + Scope resolver: because JS scopes are weird. (e.g. escope)
 + A uniform AST format (e.g. ESTree)
 + AST query / traversal mechanism e.g. ESTraverse, ESQuery
-+ 
++ LSP server implementation
++ Plugin for each text editor
+
+`var let = 1` is valid JS. `let var = 1` is not.
+
+
 
 
 ----
