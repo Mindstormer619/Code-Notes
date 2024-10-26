@@ -8,7 +8,6 @@ alias:
 # Bengaluru Systems Meetup 2024-10-26
 
 ## Faster and more efficient JS tooling
-
 > ~ Srijan Paul (@injuly)
 
 ESLint, the linter. Prettier, the autoformatter (uses CST to parse JS code and rewrites it in a prettier format). Babel, the tools that you do use most often depend on it, it's a lot of things which is a modern parser for JS which adds polyfills including some outside the JS standards (like `if` expressions).
@@ -49,6 +48,12 @@ Philip Wadler's pretty printer paper: https://homepages.inf.ed.ac.uk/wadler/pape
 + [ ] Bitpacked tries
 
 + [ ] SIMD parsing: https://arxiv.org/abs/1902.08318, https://www.youtube.com/watch?v=wlvKAT7SZIQ
+
+----
+## Load Variance
+> ~ Srinivas, OptiOwl
+
+FMEA: Failure Modes and Effect Analysis
 
 
 
