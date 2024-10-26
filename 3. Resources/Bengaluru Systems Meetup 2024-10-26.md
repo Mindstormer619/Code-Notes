@@ -38,6 +38,14 @@ What does it take to build a linter?
 
 BiomeJS and OxLint are probably the best modern options (both written in Rust)
 
++ [ ] https://blog.yaakov.online/red-green-trees/
+
+Cache efficient tree traversal: speedups by getting your branch predictors to play nice with tree traversal
+
+Philip Wadler's pretty printer paper: https://homepages.inf.ed.ac.uk/wadler/papers/prettier/prettier.pdf
+
+> Chandler Carruth had a great talk on how the Carbon compiler does data oriented compiler design
+
 
 
 ----
