@@ -46,6 +46,7 @@ Philip Wadler's pretty printer paper: https://homepages.inf.ed.ac.uk/wadler/pape
 
 > Chandler Carruth had a great talk on how the Carbon compiler does data oriented compiler design
 
++ [ ] Bitpacked tries
 
 
 ----
