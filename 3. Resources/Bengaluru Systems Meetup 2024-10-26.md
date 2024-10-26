@@ -48,6 +48,9 @@ Philip Wadler's pretty printer paper: https://homepages.inf.ed.ac.uk/wadler/pape
 
 + [ ] Bitpacked tries
 
++ [ ] SIMD parsing: https://arxiv.org/abs/1902.08318, https://www.youtube.com/watch?v=wlvKAT7SZIQ
+
+
 
 ----
 
