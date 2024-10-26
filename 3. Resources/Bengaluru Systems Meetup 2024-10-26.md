@@ -55,7 +55,9 @@ Philip Wadler's pretty printer paper: https://homepages.inf.ed.ac.uk/wadler/pape
 
 FMEA: Failure Modes and Effect Analysis
 
-
+Redis default sharding is by key hashing. If your key is the City of the user, say, then more populous cities will have heavily accessed shards.
++ Solution: use more copies (`Delhi_1`, `Delhi_2`) for high population keys
++ 
 
 ----
 
