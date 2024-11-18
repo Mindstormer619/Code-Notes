@@ -7,6 +7,8 @@ Performance itself is described by the question "what happens when load increase
 + How is the performance affected when the load parameter goes up but resources stay constant?
 + How much do you need to increase resources to keep performance unchanged?
 
+Related: [[Response Time Percentiles]]
+
 ## 🔍 Case Study: Twitter
 
 In Nov 2012, Twitter had these load parameters for their main operations:
