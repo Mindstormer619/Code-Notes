@@ -39,7 +39,7 @@ If a user request requires multiple **parallel backend calls** to complete the o
 
 Efficient calculation of response time needs to be done by ongoing monitoring. A **rolling window** of response times over, say, last 10 minutes can be used (calculate median and percentiles over the window and use that in graph).
 
-Sorting the list every time may be inefficient. There are efficient approximations at minimum CPU/memory like **forward decay, t-digest, HdrHistogram**. Averaging percentiles is mathematically meaningless — the right aggregation is to add the histograms.
+Sorting the list every time may be inefficient. There are efficient approximations at minimum CPU/memory like **forward decay, t-digest, HdrHistogram**. **Averaging percentiles is mathematically meaningless** — the right aggregation is to add the histograms.
 
 ----
 
