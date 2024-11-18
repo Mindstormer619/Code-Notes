@@ -36,9 +36,11 @@ Therefore reliability roughly means: _continuing to work correctly, even when th
 
 Reliability is important in both critical and non-critical applications (users despise it if you irreversibly lose their personal data). In some cases like prototyping, you may sacrifice reliability, but do so _explicitly_.
 
+> ☝ Netflix's _Chaos Monkey_ is used to test reliability in distributed systems.
+
 ### Hardware Faults
 
-Hardware fails _all the time_. Hard disks are reported to have a Mean Time To Failure (MTTF) of 10-50 years. Therefore on a storage cluster of 10,000 disks, one will die per day on average.
+Hardware fails _all the time_. **Hard disks are reported to have a Mean Time To Failure (MTTF) of 10-50 years. Therefore ==on a storage cluster of 10,000 disks, one will die per day on average.==**
 
 **Redundancy:** You can add backup copies to reduce the failure rate of the system. e.g. RAID configs for disks, dual power supply, hot-swappable CPUs, batteries or diesel generators for backup power. 
 
@@ -53,11 +55,11 @@ Generally hardware errors are not strongly correlated, and can mostly be conside
 + A service that the system depends on slows down / unresponsive / bugged.
 + Cascading failures: one fault triggers faults in other components.
 
-These bugs usually show that the software _makes an assumption_ which was true, up until it wasn't.
+These bugs usually show that the **software _makes an assumption_ which was true, up until it wasn't**.
 
 ### Human Errors
 
-A study found that the leading cause of outages was configuration errors by operators. Hardware faults played a role in only 10-25% of outages.
+A study found that the **leading cause of outages was configuration errors by operators**. **Hardware faults played a role in only 10-25% of outages.**
 
 Reliability despite unreliable humans? How?
 
@@ -68,11 +70,11 @@ Reliability despite unreliable humans? How?
 + Setup detailed and clear monitoring. This is also called **telemetry**.
 + Implement good management practices and training.
 
-## Scalability
+## [[Scalability]]
 
-The ability for the system to cope with increased load. However, it is meaningless to say "X is scalable" -- it is important to describe the axis on which this load is measured.
+The ability for the system to **cope with increased load**. However, it is meaningless to say "X is scalable" -- it is important to describe the axis on which this load is measured.
 
-### Load
+### [[Load]]
 
 Load is described with _load parameters_. E.g. requests per second for a webserver, ratio of reads to writes in a DB, simultaneously active user count in a chatroom, hit rate on a cache etc.
 
