@@ -1,13 +1,13 @@
 ---
-title: "Adopting Asynchronous Collaboration in Distributed Software Teams"
-source: "https://www.infoq.com/articles/asynchronous-collaboration-software-teams/"
+title: Adopting Asynchronous Collaboration in Distributed Software Teams
+source: https://www.infoq.com/articles/asynchronous-collaboration-software-teams/
 author:
-  - "[[© 2006 C4Media]]"
-published:
+  - Sumeet Gayathri Moghe
+published: 
 created: 2025-04-10
-description: "Do you work on a distributed team? If so, you know that meetings can be a major time-sink.  This article discusses the benefits of asynchronous collaboration and how to implement it on your team."
+description: Do you work on a distributed team? If so, you know that meetings can be a major time-sink.  This article discusses the benefits of asynchronous collaboration and how to implement it on your team. ~ Sumeet Gayathri Moghe
 tags:
-  - "clippings"
+  - clippings
 ---
 [InfoQ Homepage](https://www.infoq.com/ "InfoQ Homepage")[Articles](https://www.infoq.com/articles "Articles")Adopting Asynchronous Collaboration in Distributed Software Teams
 
