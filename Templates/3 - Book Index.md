@@ -1,6 +1,9 @@
 ---
 created: <%tp.file.creation_date()%>
-alias: 
+aliases: 
+type: book
+book_author: 
+tags:
 ---
 > [!summary]-
 > + 
